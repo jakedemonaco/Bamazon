@@ -60,11 +60,12 @@ function beginBuy() {
        for(var i = 0; i < res.length; i++) {
          if(res[i].product_name === answer.noItem) {
            selectedItem = res[i];
-           console.log(selectedItem);
+           console.log(res[i].product_name);
          }
        }
-       let answerNum = parseInt(answer.noItem)
+       let answerNum = parseInt(answer.itemQuantity)
        let stockNum = parseInt(selectedItem.stock_quantity)
+       console.log(stockNum);
        if (answerNum > stockNum){
          console.log('Insufficient Stock Remaining!')
          displayItems();
@@ -74,21 +75,19 @@ function beginBuy() {
           console.log("You have purchased " + selectedItem);
           }
         });//then statement
-
-
+})
+}
      function upDatabase(productName, numStock) {
        connection.query('UPDATE products SET ? WHERE ?',
        [
          {
-           stock_quantity: numStock
+           product_name: productName
          },
          {
-           product_name: productName
+           stock_quantity: numStock
          }, function(err, res) {
            console.log(res.affectedRows + 'Need to make payment first')
          }
        ]
      );
    };
-  })
-}

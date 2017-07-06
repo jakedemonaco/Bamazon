@@ -56,23 +56,32 @@ function beginBuy() {
        }
      ])//prompt finished
      .then(function(answer){
-       var selectedItem;
+       let selectedItem;
        for(var i = 0; i < res.length; i++) {
-         if(res[i].product_name === answer.noItem) {
+         if(res[i].product_name === answer.itemNo) {
            selectedItem = res[i];
-           console.log(res[i].product_name);
+           //console.log(res[i].product_name);
          }
        }
        let answerNum = parseInt(answer.itemQuantity)
        let stockNum = parseInt(selectedItem.stock_quantity)
-       console.log(stockNum);
+       let productID = parseInt(selectedItem.item_ID)
+       let updateStock = stockNum - answerNum;
+       //console.log(stockNum);
        if (answerNum > stockNum){
+         console.log('=============================')
          console.log('Insufficient Stock Remaining!')
-         displayItems();
+         console.log('=============================')
+         //beginBuy();
        } else if (answerNum <= stockNum){
-          let updateStock = stockNum - answerNum;
-          upDatabase(selectedItem, updateStock);
-          console.log("You have purchased " + selectedItem);
+
+          upDatabase(productID, updateStock);
+          console.log("You have purchased " + selectedItem.product_name);
+
+          }
+          else {
+            console.log('Insufficient Stock Remaining!')
+            beginBuy();
           }
         });//then statement
 })
@@ -81,12 +90,13 @@ function beginBuy() {
        connection.query('UPDATE products SET ? WHERE ?',
        [
          {
-           product_name: productName
+           item_ID: productName
          },
          {
            stock_quantity: numStock
          }, function(err, res) {
            console.log(res.affectedRows + 'Need to make payment first')
+           beginBuy();
          }
        ]
      );
